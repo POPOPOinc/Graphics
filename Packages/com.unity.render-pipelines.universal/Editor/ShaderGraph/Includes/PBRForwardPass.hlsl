@@ -1,3 +1,4 @@
+TEXTURE2D(_ExposureEmissionScaleBuffer); SAMPLER(sampler_ExposureEmissionScaleBuffer);
 
 void InitializeInputData(Varyings input, SurfaceDescription surfaceDescription, out InputData inputData)
 {
@@ -139,6 +140,9 @@ void frag(
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
     color.a = OutputAlpha(color.a, isTransparent);
+
+    // NOTE: Exposureに対する考慮を追加
+    color.rgb *= SAMPLE_TEXTURE2D(_ExposureEmissionScaleBuffer, sampler_ExposureEmissionScaleBuffer, 0).r;
 
     outColor = color;
 
