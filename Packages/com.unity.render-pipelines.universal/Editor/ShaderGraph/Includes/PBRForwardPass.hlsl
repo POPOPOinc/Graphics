@@ -1,3 +1,4 @@
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareExposureTexture.hlsl"
 
 void InitializeInputData(Varyings input, SurfaceDescription surfaceDescription, out InputData inputData)
 {
@@ -164,6 +165,8 @@ void frag(
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
 
     color.a = OutputAlpha(color.a, isTransparent);
+    // NOTE: Exposureに対する考慮を追加
+    color.rgb *= SampleExposure();
 
     outColor = color;
 

@@ -153,7 +153,8 @@ namespace UnityEngine.Rendering.Universal
                 builder.UseRendererList(skyRendererListHandle);
                 builder.SetRenderAttachment(colorTarget, 0, AccessFlags.Write);
                 builder.SetRenderAttachmentDepth(depthTarget, AccessFlags.Write);
-
+                builder.AllowGlobalStateModification(true);
+                
                 builder.AllowPassCulling(false);
                 if (cameraData.xr.enabled)
                 {
@@ -163,7 +164,10 @@ namespace UnityEngine.Rendering.Universal
 
                 builder.SetRenderFunc((PassData data, RasterGraphContext context) =>
                 {
+                    // 拡張: 通常の描画フローか、LightBake中かを区別できるようにしておく
+                    context.cmd.EnableShaderKeyword("_DRAW_SKYBOX_PASS");
                     ExecutePass(context.cmd, data.xr, data.skyRendererListHandle);
+                    context.cmd.DisableShaderKeyword("_DRAW_SKYBOX_PASS");
                 });
             }
         }

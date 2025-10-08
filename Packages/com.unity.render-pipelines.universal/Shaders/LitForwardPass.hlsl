@@ -6,6 +6,8 @@
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
 #endif
 
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareExposureTexture.hlsl"
+
 #if defined(_PARALLAXMAP)
 #define REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR
 #endif
@@ -257,6 +259,10 @@ void LitPassFragment(
 
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
+
+    // 拡張: Exposure
+    color.rgb *= SampleExposure();
+
     color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
 
     outColor = color;
